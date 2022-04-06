@@ -27,12 +27,12 @@ class BeerClientImplTest {
 
     @Test
     void getBeerById() {
-        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(null,null,null,
-                null,null);
+        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(null, null, null,
+                null, null);
         BeerPageList pageList = beerPageListMono.block();
 
         UUID id = pageList.getContent().get(0).getId();
-        Mono<BeerDto> beerDtoMono = beerClient.getBeerById(id,false);
+        Mono<BeerDto> beerDtoMono = beerClient.getBeerById(id, false);
         BeerDto beerDto = beerDtoMono.block();
 
         assertThat(beerDto.getId()).isEqualTo(id);
@@ -41,8 +41,8 @@ class BeerClientImplTest {
 
     @Test
     void listBeers() {
-        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(null,null,null,
-                null,null);
+        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(null, null, null,
+                null, null);
         BeerPageList pageList = beerPageListMono.block();
 
         assertThat(pageList).isNotNull();
@@ -52,8 +52,8 @@ class BeerClientImplTest {
 
     @Test
     void listBeersPageSize10() {
-        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(1,10,null,
-                null,null);
+        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(1, 10, null,
+                null, null);
         BeerPageList pageList = beerPageListMono.block();
 
         assertThat(pageList).isNotNull();
@@ -62,8 +62,8 @@ class BeerClientImplTest {
 
     @Test
     void listBeersNoRecord() {
-        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(10,20,null,
-                null,null);
+        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(10, 20, null,
+                null, null);
         BeerPageList pageList = beerPageListMono.block();
 
         assertThat(pageList).isNotNull();
@@ -86,6 +86,23 @@ class BeerClientImplTest {
 
     @Test
     void updateBeer() {
+        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(null, null, null,
+                null, null);
+        BeerPageList pageList = beerPageListMono.block();
+        BeerDto beerDto = pageList.getContent().get(0);
+
+
+        BeerDto updateBeer = BeerDto.builder()
+                .beerName("Really Nice Beer")
+                .beerStyle(beerDto.getBeerStyle())
+                .price(beerDto.getPrice())
+                .upc(beerDto.getUpc())
+                .build();
+
+        Mono<ResponseEntity<Void>> responseEntityMono = beerClient.updateBeer(beerDto.getId(), updateBeer);
+
+        ResponseEntity<Void> responseEntity = responseEntityMono.block();
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test
@@ -94,8 +111,8 @@ class BeerClientImplTest {
 
     @Test
     void getBeerByUPC() {
-        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(null,null,null,
-                null,null);
+        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(null, null, null,
+                null, null);
         BeerPageList pageList = beerPageListMono.block();
 
         String upc = pageList.getContent().get(0).getUpc();

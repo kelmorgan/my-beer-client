@@ -15,9 +15,9 @@ public interface BeerClient {
 
     Mono<ResponseEntity<Void>> createBeer (BeerDto beerDto);
 
-    Mono<ResponseEntity> updateBeer(BeerDto beerDto);
+    Mono<ResponseEntity<Void>> updateBeer(UUID beerId, BeerDto beerDto);
 
-    Mono<ResponseEntity> deleteById(UUID id);
+    Mono<ResponseEntity<Void>> deleteById(UUID id);
 
     Mono<BeerDto> getBeerByUPC(String upc);
 
