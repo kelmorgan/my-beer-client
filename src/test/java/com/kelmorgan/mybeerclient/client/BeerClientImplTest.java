@@ -31,6 +31,7 @@ class BeerClientImplTest {
 
         assertThat(pageList).isNotNull();
         assertThat(pageList.getContent().size()).isGreaterThan(0);
+        System.out.println(pageList.toList());
     }
 
     @Test
