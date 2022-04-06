@@ -24,7 +24,9 @@ public class BeerClientImpl implements BeerClient {
         return client.get()
                 .uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_V1_PATH_GET_BY_ID)
                         .queryParamIfPresent("showInventoryOnHand", Optional.ofNullable(showInventoryOnHand))
-                        .build(id)).retrieve().bodyToMono(BeerDto.class);
+                        .build(id))
+                .retrieve()
+                .bodyToMono(BeerDto.class);
     }
 
     @Override
@@ -43,32 +45,23 @@ public class BeerClientImpl implements BeerClient {
 
     @Override
     public Mono<ResponseEntity<Void>> createBeer(BeerDto beerDto) {
-        return client.post()
-                .uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_V1_PATH).build())
-                .body(BodyInserters.fromValue(beerDto))
-                .retrieve()
-                .toBodilessEntity();
+        return client.post().uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_V1_PATH).build()).body(BodyInserters.fromValue(beerDto)).retrieve().toBodilessEntity();
     }
 
     @Override
     public Mono<ResponseEntity<Void>> updateBeer(UUID id, BeerDto beerDto) {
-        return client.put()
-                .uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_V1_PATH_GET_BY_ID)
-                        .build(id))
-                .body(BodyInserters.fromValue(beerDto))
-                .retrieve()
-                .toBodilessEntity();
+        return client.put().uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_V1_PATH_GET_BY_ID).build(id)).body(BodyInserters.fromValue(beerDto)).retrieve().toBodilessEntity();
     }
 
     @Override
     public Mono<ResponseEntity<Void>> deleteById(UUID id) {
-        return null;
+        return client.delete().uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_V1_PATH_GET_BY_ID).build(id)).retrieve().toBodilessEntity();
+
+
     }
 
     @Override
     public Mono<BeerDto> getBeerByUPC(String upc) {
-        return client.get()
-                .uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_BY_UPC)
-                        .build(upc)).retrieve().bodyToMono(BeerDto.class);
+        return client.get().uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_BY_UPC).build(upc)).retrieve().bodyToMono(BeerDto.class);
     }
 }
