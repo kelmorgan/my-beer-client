@@ -1,10 +1,13 @@
 package com.kelmorgan.mybeerclient.client;
 
 import com.kelmorgan.mybeerclient.config.WebClientConfig;
+import com.kelmorgan.mybeerclient.model.BeerDto;
 import com.kelmorgan.mybeerclient.model.BeerPageList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
+
+import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +24,16 @@ class BeerClientImplTest {
 
     @Test
     void getBeerById() {
+        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(null,null,null,
+                null,null);
+        BeerPageList pageList = beerPageListMono.block();
+
+        UUID id = pageList.getContent().get(0).getId();
+        Mono<BeerDto> beerDtoMono = beerClient.getBeerById(id,false);
+        BeerDto beerDto = beerDtoMono.block();
+
+        assertThat(beerDto.getId()).isEqualTo(id);
+        assertThat(beerDto.getQuantityOnHand()).isNull();
     }
 
     @Test
@@ -56,6 +69,7 @@ class BeerClientImplTest {
 
     @Test
     void createBeer() {
+
     }
 
     @Test
@@ -68,5 +82,15 @@ class BeerClientImplTest {
 
     @Test
     void getBeerByUPC() {
+        Mono<BeerPageList> beerPageListMono = beerClient.listBeers(null,null,null,
+                null,null);
+        BeerPageList pageList = beerPageListMono.block();
+
+        String upc = pageList.getContent().get(0).getUpc();
+
+        Mono<BeerDto> beerDtoMono = beerClient.getBeerByUPC(upc);
+        BeerDto beerDto = beerDtoMono.block();
+
+        assertThat(beerDto.getUpc()).isEqualTo(upc);
     }
 }

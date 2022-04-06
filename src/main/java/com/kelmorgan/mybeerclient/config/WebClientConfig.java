@@ -13,7 +13,7 @@ public class WebClientConfig {
 
 
     @Bean
-    public WebClient webClient(){
+    public WebClient webClient() {
         return WebClient.builder()
                 .baseUrl(WebClientProperties.BASE_URL)
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.create().wiretap("reactor.netty.client.HttpClient",
