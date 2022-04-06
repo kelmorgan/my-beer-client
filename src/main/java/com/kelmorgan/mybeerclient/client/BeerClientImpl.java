@@ -6,6 +6,7 @@ import com.kelmorgan.mybeerclient.model.BeerPageList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -21,9 +22,9 @@ public class BeerClientImpl implements BeerClient {
     @Override
     public Mono<BeerDto> getBeerById(UUID id, Boolean showInventoryOnHand) {
         return client.get()
-                .uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_V1_PATH + "/" + id.toString())
+                .uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_V1_PATH_GET_BY_ID)
                         .queryParamIfPresent("showInventoryOnHand", Optional.ofNullable(showInventoryOnHand))
-                        .build()).retrieve().bodyToMono(BeerDto.class);
+                        .build(id)).retrieve().bodyToMono(BeerDto.class);
     }
 
     @Override
@@ -41,8 +42,12 @@ public class BeerClientImpl implements BeerClient {
     }
 
     @Override
-    public Mono<ResponseEntity> createBeer(BeerDto beerDto) {
-        return null;
+    public Mono<ResponseEntity<Void>> createBeer(BeerDto beerDto) {
+        return client.post()
+                .uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_V1_PATH).build())
+                .body(BodyInserters.fromValue(beerDto))
+                .retrieve()
+                .toBodilessEntity();
     }
 
     @Override
@@ -58,7 +63,7 @@ public class BeerClientImpl implements BeerClient {
     @Override
     public Mono<BeerDto> getBeerByUPC(String upc) {
         return client.get()
-                .uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_BY_UPC + "/" + upc)
-                        .build()).retrieve().bodyToMono(BeerDto.class);
+                .uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_BY_UPC)
+                        .build(upc)).retrieve().bodyToMono(BeerDto.class);
     }
 }
